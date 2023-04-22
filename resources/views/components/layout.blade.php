@@ -28,9 +28,9 @@
                         data-placement="bottom"><i class="fas fa-search"></i></a>
                     <span class="text-white mr-2 header-chat-icon" title="Chat" data-toggle="tooltip"
                         data-placement="bottom"><i class="fas fa-comment"></i></span>
-                    <a href="#" class="mr-2"><img title="My Profile" data-toggle="tooltip" data-placement="bottom"
+                    <a href="/profile/{{Auth::user()->username}}" class="mr-2"><img title="My Profile" data-toggle="tooltip" data-placement="bottom"
                             style="width: 32px; height: 32px; border-radius: 16px"
-                            src="https://gravatar.com/avatar/f64fc44c03a8a7eb1d52502950879659?s=128" /></a>
+                            src="{{Auth::user()->avatar}}" /></a>
                     <a class="btn btn-sm btn-success mr-2" href="/create-post">Create Post</a>
                     <form action="/logout" method="POST" class="d-inline">
                         @csrf
@@ -54,7 +54,7 @@
                         <button class="btn btn-primary btn-sm">Sign In</button>
                     </div>
                 </div>
-            </form>
+            </form> 
             @endauth
         </div>
     </header>
@@ -66,7 +66,13 @@
 
     @if (session()->has('error'))
     <div class="container container--narrow">
-        <div class="alert alert-warning text-center"> {{session('error')}} </div>
+        <div class="alert alert-danger text-center"> {{session('error')}} </div>
+    </div>
+    @endif
+
+    @if (session()->has('warning'))
+    <div class="container container--narrow">
+        <div class="alert alert-warning text-center"> {{session('warning')}} </div>
     </div>
     @endif
     <!-- header ends here -->
@@ -94,3 +100,4 @@
 </body>
 
 </html>
+    
