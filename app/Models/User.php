@@ -51,6 +51,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    //a function who return all the post of the user who follows this user
+    public function postFeed(){
+        return $this->hasManyThrough(Post::class,Follow::class,'user_id','user_id','id','followeduser');
+    }
+
+    //Fonction pour recuprer tous les followers de notre users
+    public function followers(){
+        return $this->hasMany(Follow::class,'followeduser');
+    }
+
+    //a function to return all the user who follows this user
+    public function followingsThisUser(){
+        return $this->hasMany(Follow::class,'user_id');
+    }
+
     //cle etrangère fi recuperena anle tous les blogs ce la personne en question a fais 
     public function posts(){
         return $this->hasMany(Post::class,'user_id');

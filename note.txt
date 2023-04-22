@@ -238,3 +238,17 @@ public function up()
             $table->timestamps();
         });
     }
+
+L -------
+Quelque chose qui vas t'aider dans la Bootstrap avec les Classe active (comme dans les Dashboard )
+
+1. 
+        <div class="profile-nav nav nav-tabs pt-2 mb-4">
+            <a href="/profile/{{$username}}" class="profile-nav-link nav-item nav-link {{ Request::segment(3) == "" ? "active" : ""}} ">Posts: {{ $blogsCount }} </a>
+            <a href="/profile/{{$username}}/followers" class="profile-nav-link nav-item nav-link {{ Request::segment(3) == "followers" ? "active" : ""}}">Followers: 3</a>
+            <a href="/profile/{{$username}}/followings" class="profile-nav-link nav-item nav-link {{ Request::segment(3) == "followings" ? "active" : ""}}">Following: 2</a>
+
+2.
+explication :::
+{{ Request::segment(3) == "followers" ? "active" : ""}} === ce code veut dire que si dans le 3eme est egale à followers  la classe active sera ajouter dans la classe
+sinon on ne fait rien

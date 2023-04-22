@@ -42,3 +42,5 @@ Route::post('/remove-follow/{user:username}' , [FollowController::class , 'remov
 
 //Profile related routes 
 Route::get('/profile/{user:username}' , [UserController::class , 'profile'])->middleware('karimAuth');
+Route::get('/profile/{user:username}/followers' , [UserController::class , 'profileFollowers'])->middleware('karimAuth');
+Route::get('/profile/{user:username}/followings' , [UserController::class , 'profileFollowings'])->middleware('karimAuth');

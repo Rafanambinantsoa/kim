@@ -13,7 +13,7 @@ class Post extends Model
         'body',
         'user_id'
     ];
-//fakana anle donner anaty cle etrangere
+//fakana anle donner anaty cle etrangere (specialiser ho anle image ou bien avatar)
     public function cletrangere(){
         return $this->belongsTo(User::class,'user_id');
     }

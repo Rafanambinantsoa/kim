@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\View;
 
 class UserController extends Controller
 {
@@ -44,37 +45,69 @@ class UserController extends Controller
         return view('avatar-form');
     }
 
-    public function profile(User $user){
-        $blogs = $user->posts()->latest()->get();
-        $blogsCount = $user->posts()->latest()->get()->count();
-
-
+    //focntion permettant de partager les donnee qui se repetent dans le 3 fonction (profile , profileFollowers , profileFollowings)
+    private function getSharedData($user){
         //verification s'il a dejà suivi la personne en question
-        $currentFollowings = Follow::where([
-            ['user_id' , '=' , auth()->user()->id],
-            ['followeduser' , '=' , $user->id]
-        ])->count();
+        $currentFollowings = 0 ; 
+        $blogsCount = $user->posts()->latest()->get()->count();
+        if(auth()->check()){
+            $currentFollowings = Follow::where([
+                ['user_id' , '=' , auth()->user()->id],
+                ['followeduser' , '=' , $user->id]
+            ])->count();
+        }
 
-
-
-        // dd($currentFollowings);
-        return view('profile-posts' , [
+        View::share('sharedData' ,[
             'username' => $user->username ,
             'avatar' => $user->avatar ,
+            'blogsCount' => $blogsCount ,
+            'followersCount' => $user->followers()->count() ,
+            'followingsCount' => $user->followingsThisUser()->count() ,
+            'currentFollowings' => $currentFollowings
+        ] );
+    }
+
+    public function profile(User $user){
+        $blogs = $user->posts()->latest()->get();
+        $this->getSharedData($user);
+
+        
+        // dd($currentFollowings);
+        return view('profile-posts' , [
             'blogs' => $blogs,
-            'blogsCount' => $blogsCount , 
-            'currentFollowings' => $currentFollowings , 
+        ]);
+    }
+
+    public function profileFollowers(User $user){
+        $followers = $user->followers()->latest()->get();
+        $this->getSharedData($user);
+
+        
+        // dd($currentFollowings);
+        return view('profile-followers' , [
+            'followers' => $followers,
+        ]);
+    }
+
+    public function profileFollowings(User $user){
+        $followings = $user->followingsThisUser()->latest()->get();
+        $this->getSharedData($user);
+
+        
+        // dd($currentFollowings);
+        return view('profile-followings' , [
+            'followings' => $followings,
         ]);
     }
 
     public function logout(){
         Auth::logout();
-        return redirect('/')->with('success', 'You are logged out');
+        return redirect('/')->with('success' , 'You are logged out');
     }
 
     public function showCorrectHomePage(){
         if (auth()->check()){
-            return view('homePage-feed');
+            return view('homePage-feed' , ['posts' => auth()->user()->postFeed()->latest()->get()]);
         }else{
             return view('homePage');
         }
