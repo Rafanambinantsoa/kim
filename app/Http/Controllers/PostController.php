@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+
+    public function search($term){
+        $kim = Post::search($term)->get();
+        $kim->load('cletrangere:id,username,avatar');
+        // dd($kim);
+        return response()->json($kim);
+    }
+
     public function actuallyUpdate(Post $post,Request $request){
         $incomingFields = $request->validate([
             'title' => 'required',

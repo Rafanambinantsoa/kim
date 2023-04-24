@@ -263,3 +263,31 @@ Dans le fichier blade , on appel just la methode $post-links() pour generer le b
 
 3. 
 Pour utiliser BS5  , on vas dans le fichier AppServiceProvider puis dans la fonction boot et on ajoute Paginator::useBootsrapFive() 
+
+
+N ----------
+RECHERCHE EN LARAVEL 
+1. 
+composer require laravel/scout 
+
+2.
+laravel vendor:publish --provider="Laravel/Scout/ScoutServiceProvider"
+
+3. 
+Dans le model POST  , on ajoute les 
+class Post extends Model
+{
+    use HasFactory;
+    use Searchable; ====
+et aussi son namespace 
+use Laravel\Scout\Searchable;
+
+4. 
+Dans notre Controller 
+
+public function recherche($term){
+        $kim = Post::search($term)->get();
+        return $kim;
+    }
+
+De vita ny chocolat 

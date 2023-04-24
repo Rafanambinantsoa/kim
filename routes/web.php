@@ -35,6 +35,7 @@ Route::get('/post/{post}' , [PostController::class , 'viewSinglePost'])->middlew
 Route::delete('/post/{post}' , [PostController::class , 'delete'])->middleware('can:delete,post');
 Route::get('/post/{post}/edit' , [PostController::class , 'showUpdateForm'])->middleware('can:update,post');
 Route::put('/post/{post}' , [PostController::class , 'actuallyUpdate'])->middleware('can:update,post');
+Route::get('/search/{term}' , [PostController::class , 'search'])->middleware('karimAuth');
 
 //Follow related routes
 Route::post('/create-follow/{user:username}' , [FollowController::class , 'createFollow']);
