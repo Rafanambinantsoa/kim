@@ -107,7 +107,10 @@ class UserController extends Controller
 
     public function showCorrectHomePage(){
         if (auth()->check()){
-            return view('homePage-feed' , ['posts' => auth()->user()->postFeed()->latest()->get()]);
+            // return view('homePage-feed' , ['posts' => auth()->user()->postFeed()->latest()->get()]);
+            // Pour le pagination automatique en laravel au lieu de get on utilise paginate avec le parametre du nombre de post par page
+            return view('homePage-feed' , ['posts' => auth()->user()->postFeed()->latest()->paginate(4)]);
+
         }else{
             return view('homePage');
         }

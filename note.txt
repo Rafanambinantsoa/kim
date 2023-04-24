@@ -252,3 +252,14 @@ Quelque chose qui vas t'aider dans la Bootstrap avec les Classe active (comme da
 explication :::
 {{ Request::segment(3) == "followers" ? "active" : ""}} === ce code veut dire que si dans le 3eme est egale à followers  la classe active sera ajouter dans la classe
 sinon on ne fait rien
+
+M ------
+PAGINATION AUTO EN LARAVEL  
+1. 
+À la fin du rêquete  au lieu de get on utlise  paginate(nombre de resultat à afficher) 
+
+2. 
+Dans le fichier blade , on appel just la methode $post-links() pour generer le bouton de pagination 
+
+3. 
+Pour utiliser BS5  , on vas dans le fichier AppServiceProvider puis dans la fonction boot et on ajoute Paginator::useBootsrapFive() 

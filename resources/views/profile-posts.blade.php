@@ -1,4 +1,4 @@
-<x-profile :sharedData="$sharedData">
+<x-profile :sharedData="$sharedData" title="{{$sharedData['username']}}'s Profile">
     <div class="list-group">
         @foreach ($blogs as $blog)
             <a href="/post/{{ $blog->id }}" class="list-group-item list-group-item-action">
