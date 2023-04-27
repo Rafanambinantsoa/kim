@@ -1,8 +1,10 @@
 <?php
 
+use App\Events\ChatMessage;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,3 +47,21 @@ Route::post('/remove-follow/{user:username}' , [FollowController::class , 'remov
 Route::get('/profile/{user:username}' , [UserController::class , 'profile'])->middleware('karimAuth');
 Route::get('/profile/{user:username}/followers' , [UserController::class , 'profileFollowers'])->middleware('karimAuth');
 Route::get('/profile/{user:username}/followings' , [UserController::class , 'profileFollowings'])->middleware('karimAuth');
+
+//Chat related routes 
+Route::post('/send-chat-message' ,  function(Request $request){
+    $formFields = $request->validate([
+        'textvalue' => 'required'
+    ]);
+
+    if(!trim(strip_tags($formFields['textvalue']))){
+        return response()->noContent();
+    }
+
+    broadcast(new ChatMessage([
+        'username' => auth()->user()->username,
+        'textvalue' => $formFields['textvalue'] , 
+        'avatar' => auth()->user()->avatar
+    ]) );
+    return response()->noContent();
+})->middleware('karimAuth');

@@ -291,3 +291,151 @@ public function recherche($term){
     }
 
 De vita ny chocolat 
+
+O ------ 
+Génerer un event et un listener  en laravel 
+
+1. 
+se rendere dans le fichier EventServiceProvider  ; 
+ 2.
+ Creer notre event et listener dans la fonction  
+ protected $listen = [
+        OurExampleEvent::class => [
+            OurExampleListener::class,
+        ], 
+
+2.
+Puis inserer son namespace en haut en tapant 
+ use App\Event\OurExampleEvent
+ use App\EventListener\OurExampleListener
+
+3.
+Puis il faut le generer  , par laravel event:generate 
+
+
+P --------
+Exemple d'utilisation d'un Event ('Affichage de se ce qui s'est connecter ou se deconnecter')  
+
+1.
+Dans notre controller on doit passer des variables et aprés l'afficher dans notre debug (laravel.log)
+event(new OurExampleEvent([
+                'username' => auth()->user()->username , 
+                'action' => 'login' 
+            ]));
+
+2.
+Pour l'afficher ; (Ouvre le fichier OurExampleEvent )
+dans la  fonction __constructon ajoute 
+public function __construct($variables)
+    {
+        $this->username = $variables['username'];
+        $this->action = $variables['action'];
+    }
+
+3.
+Ouvre le fichier listener  pou l'afficher dans notre laravel.log 
+    public function handle(OurExampleEvent $event)
+    {
+        Log::debug("Salut , {$event->username} vient de se {$event->action}");
+    }
+
+voilà et à chaque fois que l'utilisateur se connecte ou de deconnecte  , le log affichera toujours un message 
+
+
+Q ----------
+CHAT EN LARAVEL 
+
+1.
+On doit creer un event dans la commande en tapant  , larave make:event kimEvent
+
+2.
+Puis dans cette event fraichement creer  , on doit ajouter les donner qu'on doit recevoir dans la fonction __construct
+genre 
+
+public function __construct($chat)
+    {
+        $this->chat = [
+            'username' => $chat['username'],
+            'textvalue' => $chat['textvalue'] , 
+            'avatar' => $chat['avatar'] 
+        ];
+    }
+
+3.
+Puis  , on doit choisir le nom de channel pour traiter les condition d'adhésion dans cette chat (encore dans le event)
+    public function broadcastOn()
+    {
+        return new PrivateChannel('chatchannel');
+    }
+
+4.
+Après on doit se rendre dans le fichier 
+channels.php  pour creer genre comme une nouvelles routes mais ce qu'on doit creer c'est un channel 
+qui verifie sile user est authenticated 
+Broadcast::channel('chatchannel', function () {
+    if(auth()->check()){
+        return true;
+    }
+    return false;
+});
+
+
+5.
+Bien évidement on doit creer une route dans le web.php  qui a pour but (comme une sorte d'api) de poster les messages 
+dans notre pusher 
+
+//Chat related routes 
+Route::post('/send-chat-message' ,  function(Request $request){
+    $formFields = $request->validate([
+        'textvalue' => 'required'
+    ]);
+
+    if(!trim(strip_tags($formFields['textvalue']))){
+        return response()->noContent();
+    }
+
+    broadcast(new ChatMessage([
+        'username' => auth()->user()->username,
+        'textvalue' => $formFields['textvalue'] , 
+        'avatar' => auth()->user()->avatar
+    ]) );
+    return response()->noContent();
+})->middleware('karimAuth');
+
+
+6.
+On doit decommenter ce truc la dans app.php 
+        App\Providers\BroadcastServiceProvider::class,
+
+7.
+Et puis dans bootstrap.js on doit decommenter ce truce là  ,suivant cette comment apres npm install laravel-echo pusher.js
+(qui S'ocuppe com  chat server laravel en ligne )
+import Echo from 'laravel-echo';
+
+import Pusher from 'pusher-js';
+window.Pusher = Pusher;
+
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: import.meta.env.VITE_PUSHER_APP_KEY,
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+    wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+    wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
+    wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
+    forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
+    enabledTransports: ['ws', 'wss'],
+});
+
+
+8.
+voilà ça devrait marcher 
+EN fait làj'aimserais donner une sorte de chemein de notre donnee  
+-Primos dans le côter js (comme front qui envoie le donée depuis axios avec notre route laravel  )
+-Notre route le recois et fais les verification 
+-Puis le balance dans notre event  chatMessage
+-Apres si le channel retoiurne true  , il doit il doit envoie le message à tous ceux qui sont connecter 
+-et c'est le js qui s'onccupe de recevoir ces message et le partager 
+voilà 
+
+
+

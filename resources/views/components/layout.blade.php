@@ -85,6 +85,10 @@
 
     {{ $slot }}
 
+    @auth
+        <div data-avatar="{{auth()->user()->avatar}}" data-username="{{auth()->user()->username}}" id="chat-wrapper" class="chat-wrapper shadow border-top border-left border-right" ></div>
+    @endauth
+
     <!-- footer begins -->
     <footer class="border-top text-center small text-muted py-3">
         <p class="m-0">Copyright &copy; {{date('Y')}} <a href="/" class="text-muted">OurApp</a>. All rights reserved.
