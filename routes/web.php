@@ -48,6 +48,16 @@ Route::get('/profile/{user:username}' , [UserController::class , 'profile'])->mi
 Route::get('/profile/{user:username}/followers' , [UserController::class , 'profileFollowers'])->middleware('karimAuth');
 Route::get('/profile/{user:username}/followings' , [UserController::class , 'profileFollowings'])->middleware('karimAuth');
 
+Route::middleware('cache.headers:public;max_age=20;etag')->group(function(){
+    Route::get('/profile/{user:username}/raw' , [UserController::class , 'profileRaw']);
+    Route::get('/profile/{user:username}/followers/raw' , [UserController::class , 'profileFollowersRaw']);
+    Route::get('/profile/{user:username}/followings/raw' , [UserController::class , 'profileFollowingsRaw']);
+});
+
+// Route::get('/profile/{user:username}/raw' , [UserController::class , 'profileRaw'])->middleware('cache.headers:public;max_age=20;etag');
+// Route::get('/profile/{user:username}/followers/raw' , [UserController::class , 'profileFollowersRaw'])->middleware('karimAuth');
+// Route::get('/profile/{user:username}/followings/raw' , [UserController::class , 'profileFollowingsRaw'])->middleware('karimAuth');
+
 //Chat related routes 
 Route::post('/send-chat-message' ,  function(Request $request){
     $formFields = $request->validate([

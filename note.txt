@@ -438,4 +438,16 @@ EN fait làj'aimserais donner une sorte de chemein de notre donnee
 voilà 
 
 
+R -----------------
+LA PAGE NE LOAD PAS QUAND ON SZITCHE ENTRE FOLLOWERS  , POST , FOLLOWING , 
+here how we do it 
+
+1.
+c'est le profile.js qui fais genre il utilise les les route qui sont grouper à l'interieur du middleware 
+cache.headers:public;max_age=20;etag petit traduction === les donnee venant des BD seront charger dans le cache du serveur pendant 20s
+comme il y a moins de bandwith utiliser 
+
+2. 
+comme je l'ai dit c'est le profile qui tout lz bouleau  , il assure le changement du titre (en haut)
+mais aussi le contenu des follower , post  , followings , san loader la page  , avec les 3 methode avec RAW
 

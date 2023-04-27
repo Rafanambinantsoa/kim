@@ -75,7 +75,19 @@ class UserController extends Controller
         
         // dd($currentFollowings);
         return view('profile-posts' , [
-            'blogs' => $blogs,
+            'posts' => $blogs,
+        ]);
+    }
+
+    //Amélioration en js
+    public function profileRaw(User $user){
+        $blogs = $user->posts()->latest()->get();
+
+        return response()->json([
+            'theHTML' => view('profile-posts-only' , [
+                'posts' => $blogs,
+            ])->render() ,
+            'docTitle' => $user->username . "'s profile"
         ]);
     }
 
@@ -89,6 +101,17 @@ class UserController extends Controller
             'followers' => $followers,
         ]);
     }
+    //Amélioration js
+    public function profileFollowersRaw(User $user){
+        $followers = $user->followers()->latest()->get();
+
+        return response()->json([
+            'theHTML' => view('profile-followers-only' , [
+                'followers' => $followers,
+            ])->render() ,
+            'docTitle' => $user->username . "'s followers"
+        ]);
+    }
 
     public function profileFollowings(User $user){
         $followings = $user->followingsThisUser()->latest()->get();
@@ -98,6 +121,17 @@ class UserController extends Controller
         // dd($currentFollowings);
         return view('profile-followings' , [
             'followings' => $followings,
+        ]);
+    }
+
+    public function profileFollowingsRaw(User $user){
+        $followings = $user->followingsThisUser()->latest()->get();
+
+        return response()->json([
+            'theHTML' => view('profile-followings-only' , [
+                'followings' => $followings,
+            ])->render() ,
+            'docTitle' => $user->username . "'s followings"
         ]);
     }
 
