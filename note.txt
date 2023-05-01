@@ -519,5 +519,27 @@ laravel queue:work
 l'envoie d'email auto et la creation du post se fera en parallele 
 
 
+T ----------
 
+Laravel Envoie Email Auto ou  pas des email tout simplement autre chose que l'email 
+mais dans cette exemple on doit vas envoyer unse sorte de recapitilation des 
+nombre des users et post  chaque minute par email 
+
+1.
+Creer le view (pour l'email)
+laravel make:mail MailRecap 
+
+2.
+Se rendre dans le fichier Kernel (console) 
+protected function schedule(Schedule $schedule)
+    {
+        $schedule->call(function (){
+            Mail::to('tsukasashishiosama@gmail.com')->send(new RecapEmail());
+        })->everyMinute();
+        // $schedule->command('inspire')->hourly();
+    }
+
+    cette fonction permet d'envoyer un email chaque minute à tsukasashishiosama@gmail.com 
+
+Et voilà
 
