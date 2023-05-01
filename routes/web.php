@@ -80,13 +80,15 @@ Route::post('/send-chat-message' ,  function(Request $request){
 })->middleware('karimAuth');
 
 //Route related email
-Route::get('/email' , function(){
+// Route::get('/email' , function(){
     
-    $data = ['message' => 'MNad le izy mon pote'];
+//     $data = ['message' => 'MNad le izy mon pote'];
 
-    Mail::to('tsukasashishiosama@gmail.com')->send(new TestEmail($data));
+//     Mail::to('tsukasashishiosama@gmail.com')->send(new TestEmail($data));
 
-    return response()->json([
-        'massege' => "success"
-    ]);
-});
+//     return response()->json([
+//         'massege' => "success"
+//     ]);
+// });
+
+//Related route for Email

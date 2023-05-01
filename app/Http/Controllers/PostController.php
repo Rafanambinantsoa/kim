@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewPostEmail;
 use App\Models\Post;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class PostController extends Controller
 {
@@ -60,6 +62,14 @@ class PostController extends Controller
 
         //Insertion dans la BD
         $post = Post::create($data);
+        //Envoie Email 
+        //Tu peux customiser l'adrs email mais j'ai que cette compte donc  genre tu peux faire comme ça
+        //        Mail::to(auth()->user()->email)->send(new NewPostEmail());
+        Mail::to('tsukasashishiosama@gmail.com')->send(new NewPostEmail([
+            'name' => auth()->user()->username ,
+            'post_name'   => $data['title']
+
+        ]));
 
         return redirect("/post/{$post->id}")->with('success','Your post has been created successfully.');
     
