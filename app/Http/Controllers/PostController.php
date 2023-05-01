@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendNewEmail;
 use App\Mail\NewPostEmail;
 use App\Models\Post;
 use Illuminate\Support\Str;
@@ -65,11 +66,12 @@ class PostController extends Controller
         //Envoie Email 
         //Tu peux customiser l'adrs email mais j'ai que cette compte donc  genre tu peux faire comme ça
         //        Mail::to(auth()->user()->email)->send(new NewPostEmail());
-        Mail::to('tsukasashishiosama@gmail.com')->send(new NewPostEmail([
-            'name' => auth()->user()->username ,
-            'post_name'   => $data['title']
-
+        //Utilisation de queue (laravel job)
+        dispatch(new SendNewEmail([
+            'name' => auth()->user()->username,
+            'post_name' => $data['title'] , 
         ]));
+
 
         return redirect("/post/{$post->id}")->with('success','Your post has been created successfully.');
     

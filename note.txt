@@ -451,3 +451,73 @@ comme il y a moins de bandwith utiliser
 comme je l'ai dit c'est le profile qui tout lz bouleau  , il assure le changement du titre (en haut)
 mais aussi le contenu des follower , post  , followings , san loader la page  , avec les 3 methode avec RAW
 
+
+
+S --------------
+En fait  ,  le laravel job(queue ) sert à tourner un sorte de requete en background  dans laravel  voyons par exemple 
+dans notre PostController on l'as utiliser pour envoyer des emails  , 
+dans notre premier methode on juste ecrit le code qui permet d'envoyer un email directement dans cette controller 
+cela provoque un chargment de page trop lente car l'user doit creer un post et il y a aussi l'envoie de email auto 
+Donc en gros laravel tourne ces 2 fonctionnalite en parallele , et quand un utilisateur creer un post 
+il sera rediriger vers son post fraichement creer 
+et l'envoie de mail auto tourne en arriere plan et méme si çca prend de temps l'user auras déja accces à son post 
+voilà 
+Poour ce faire , il faut suivre ces étapes 
+
+1. 
+laravel make:queue SendNewEmail 
+
+2.
+Dans la fonction handle on ajoute l'action à faire et aussi les donner recupere dans le controller 
+
+  public function __construct($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        Mail::to('tsukasashishiosama@gmail.com')->send(new NewPostEmail([
+            'name' => $this->data['name'] , 
+            'post_name'=> $this->data['post_name']
+        ]));
+    }
+
+
+3.
+Dans le controller , on doit l'appeler comme ce-ci 
+
+dispatch(new SendNewEmail([
+            'name' => auth()->user()->username,
+            'post_name' => $data['title'] , 
+        ]));
+
+4.
+Dans le fichier .env  , on doit changer 
+QUEUE_CONNECTION=sync
+en
+QUEUE_CONNECTION=database
+
+5.
+Creer son migration dans la BD 
+laravel queue:table
+ET aussi le migrer apres 
+laravel migrate
+
+6.
+On doit le demarer comme
+laravel serve 
+mais juste comme ça ::
+laravel queue:work 
+
+À chaque fois  , qu'un user creer un post 
+l'envoie d'email auto et la creation du post se fera en parallele 
+
+
+
+
