@@ -4,7 +4,9 @@ use App\Events\ChatMessage;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Mail\TestEmail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,6 +25,7 @@ Route::get('/admins-only' , function(){
 })->middleware('can:visitAdminPages');
 
 //User routes
+//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
 Route::get('/', [UserController::class , 'showCorrectHomePage'])->name('login');
 Route::post('/register', [UserController::class , 'register']);
 Route::post('/login', [UserController::class , 'login']);
@@ -75,3 +78,15 @@ Route::post('/send-chat-message' ,  function(Request $request){
     ]) );
     return response()->noContent();
 })->middleware('karimAuth');
+
+//Route related email
+Route::get('/email' , function(){
+    
+    $data = ['message' => 'MNad le izy mon pote'];
+
+    Mail::to('tsukasashishiosama@gmail.com')->send(new TestEmail($data));
+
+    return response()->json([
+        'massege' => "success"
+    ]);
+});
