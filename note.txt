@@ -543,3 +543,6 @@ protected function schedule(Schedule $schedule)
 
 Et voilà
 
+U -------
+Le cache  , pour l'Affichage de nombre de post dans la page d'accueil  , elle est stocjer dans le cache du 
+navigateur pendant 20s , regarde dans le controller Usercontroller
