@@ -546,3 +546,16 @@ Et voilà
 U -------
 Le cache  , pour l'Affichage de nombre de post dans la page d'accueil  , elle est stocjer dans le cache du 
 navigateur pendant 20s , regarde dans le controller Usercontroller
+
+
+V ----------
+Laravel API , genre on peut mettre 2 middleware  , la premier c'est le auth:sanctum et la  2eme c'est le policy can:delete,post
+
+1.
+Route::delete('/delete/{post}' , [PostController::class , 'deleteApi'])->middleware('auth:sanctum' , 'can:delete,post')
+
+Utilise aussi Insomnia ou Bien Postman pour les Test  , Salut 
+
+2.
+NB : Pour les route Protéger par le login ,  il faut mettre le token dans Auth puis Token Bearer 
+comme ça l'utilisateur connecter a le droit de faire les operation tel que l'ajout et tout le reste 

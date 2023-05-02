@@ -44,6 +44,12 @@ class PostController extends Controller
         return redirect('/profile/'.auth()->user()->username)->with('success' , "Congrats  , you successfully deleted the posts");
     }
 
+    public function deleteApi(Post $post){
+        // $post = Post::find(request('id'));
+        $post->delete();
+        return response()->json(['message' => 'Post deleted successfully']);
+    }
+
     public function viewSinglePost(Post $post){
         // dd($post);
         //Mampisa anle markdown
@@ -74,6 +80,32 @@ class PostController extends Controller
 
 
         return redirect("/post/{$post->id}")->with('success','Your post has been created successfully.');
+    
+    }
+
+    public function storeNewPostApi(Request $request){
+        $data = $request->validate([
+            'title' => 'required',
+            'body' => 'required'
+        ]);
+
+        $data['title'] = strip_tags($data['title']);
+        $data['body'] = strip_tags($data['body']);
+        $data['user_id'] = auth()->id();
+
+        //Insertion dans la BD
+        $post = Post::create($data);
+        //Envoie Email 
+        //Tu peux customiser l'adrs email mais j'ai que cette compte donc  genre tu peux faire comme ça
+        //        Mail::to(auth()->user()->email)->send(new NewPostEmail());
+        //Utilisation de queue (laravel job)
+        dispatch(new SendNewEmail([
+            'name' => auth()->user()->username,
+            'post_name' => $data['title'] , 
+        ]));
+
+
+        return $post->toJson();
     
     }
 
